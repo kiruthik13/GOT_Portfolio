@@ -1,243 +1,69 @@
 import React, { useEffect, useRef, useState } from 'react';
 
 const Hero = () => {
-  const fireCanvasRef = useRef(null);
-  const [typedText, setTypedText] = useState('');
   const heroRef = useRef(null);
+  const [isVisible, setIsVisible] = useState(false);
 
-  // Typing animation — starts only when hero is visible, cleans up on unmount
   useEffect(() => {
-    const roles = [
-      'Software Engineer',
-      'Flutter Developer',
-      'React & Node.js Full Stack',
-      'AI Enthusiast',
-      'Hackathon Champion ⚔',
-      'Oracle Java SE17 Certified'
-    ];
-    let rIdx = 0, cIdx = 0, deleting = false;
-    let timeout;
-    let started = false;
-
-    const type = () => {
-      const role = roles[rIdx];
-      if (!deleting) {
-        setTypedText(role.slice(0, ++cIdx));
-        if (cIdx === role.length) {
-          deleting = true;
-          timeout = setTimeout(type, 2000);
-          return;
-        }
-      } else {
-        setTypedText(role.slice(0, --cIdx));
-        if (cIdx === 0) {
-          deleting = false;
-          rIdx = (rIdx + 1) % roles.length;
-        }
-      }
-      timeout = setTimeout(type, deleting ? 60 : 80);
-    };
-
-    // Use IntersectionObserver to start typing only when hero is visible
     const observer = new IntersectionObserver(
       ([entry]) => {
-        if (entry.isIntersecting && !started) {
-          started = true;
-          timeout = setTimeout(type, 400);
+        if (entry.isIntersecting) {
+          setIsVisible(true);
           observer.disconnect();
         }
       },
       { threshold: 0.1 }
     );
-
     if (heroRef.current) observer.observe(heroRef.current);
-
-    return () => {
-      observer.disconnect();
-      clearTimeout(timeout);
-    };
-  }, []);
-
-  // Sword Energy Waves Canvas — with mobile/reduced-motion guards
-  useEffect(() => {
-    const isMobile = window.innerWidth < 768;
-    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-
-    const canvas = fireCanvasRef.current;
-    if (!canvas) return;
-
-    // On mobile or reduced motion — skip canvas animation entirely
-    if (isMobile || reducedMotion) {
-      canvas.style.display = 'none';
-      return;
-    }
-
-    const ctx = canvas.getContext('2d');
-    let w, h;
-    const resize = () => {
-      w = canvas.width = window.innerWidth;
-      h = canvas.height = 300;
-    };
-    resize();
-    window.addEventListener('resize', resize);
-
-    const waves = [
-      { amplitude: 40, frequency: 0.005, speed: 0.02,   offset: 0,          color: 'rgba(201, 168, 76, 0.15)' },
-      { amplitude: 30, frequency: 0.008, speed: -0.015, offset: Math.PI / 2, color: 'rgba(201, 168, 76, 0.12)' },
-      { amplitude: 50, frequency: 0.003, speed: 0.01,   offset: Math.PI,    color: 'rgba(201, 168, 76, 0.08)' }
-    ];
-
-    const particles = [];
-    const sparkCount = 40;
-    for (let i = 0; i < sparkCount; i++) {
-      particles.push({
-        x: Math.random() * (w || window.innerWidth),
-        y: (h || 300) + Math.random() * 100,
-        vx: (Math.random() - 0.5) * 1.5,
-        vy: -Math.random() * 2 - 0.5,
-        size: Math.random() * 1.8 + 0.5,
-        life: Math.random() * 0.8 + 0.2,
-        decay: Math.random() * 0.01 + 0.005,
-        color: Math.random() > 0.5 ? 'rgba(201, 168, 76, 0.8)' : 'rgba(184, 176, 160, 0.6)'
-      });
-    }
-
-    let time = 0;
-    let animId;
-
-    const drawWaves = () => {
-      ctx.globalCompositeOperation = 'lighter';
-      waves.forEach(wave => {
-        ctx.beginPath();
-        ctx.moveTo(0, h);
-        for (let x = 0; x < w; x += 5) {
-          const y = h - 60 - Math.sin(x * wave.frequency + wave.offset + time * wave.speed) * wave.amplitude;
-          ctx.lineTo(x, y);
-        }
-        ctx.lineTo(w, h);
-        ctx.fillStyle = wave.color;
-        ctx.fill();
-      });
-      ctx.lineWidth = 1;
-      ctx.strokeStyle = 'rgba(201, 168, 76, 0.1)';
-      for (let i = 0; i < 3; i++) {
-        ctx.beginPath();
-        const yBase = h - 70 - i * 15;
-        ctx.moveTo(0, yBase);
-        for (let x = 0; x < w; x += 10) {
-          const pulse = Math.sin(x * 0.01 - time * 0.05 + i) * 10;
-          ctx.lineTo(x, yBase + pulse);
-        }
-        ctx.stroke();
-      }
-    };
-
-    const drawAura = () => {
-      const grad = ctx.createLinearGradient(0, h - 220, 0, h);
-      grad.addColorStop(0, 'transparent');
-      grad.addColorStop(0.5, 'rgba(201, 168, 76, 0.05)');
-      grad.addColorStop(1, 'rgba(139, 26, 26, 0.1)');
-      ctx.fillStyle = grad;
-      ctx.fillRect(0, h - 220, w, 220);
-    };
-
-    const drawParticles = () => {
-      particles.forEach(p => {
-        p.x += p.vx;
-        p.y += p.vy;
-        p.life -= p.decay;
-        if (p.life <= 0 || p.y < -20) {
-          p.x = Math.random() * w;
-          p.y = h + Math.random() * 50;
-          p.life = Math.random() * 0.8 + 0.2;
-        }
-        ctx.beginPath();
-        ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
-        ctx.fillStyle = p.color.replace(')', `, ${p.life})`);
-        ctx.fill();
-        ctx.shadowBlur = 4;
-        ctx.shadowColor = p.color;
-      });
-      ctx.shadowBlur = 0;
-    };
-
-    const animate = () => {
-      ctx.clearRect(0, 0, w, h);
-      time += 0.5;
-      drawAura();
-      drawWaves();
-      drawParticles();
-      animId = requestAnimationFrame(animate);
-    };
-    animId = requestAnimationFrame(animate);
-
-    return () => {
-      window.removeEventListener('resize', resize);
-      cancelAnimationFrame(animId);
-    };
-  }, []);
-
-  // Parallax
-  useEffect(() => {
-    const handleScroll = () => {
-      const sy = window.scrollY;
-      const sigil = document.querySelector('.hero-sigil');
-      const bg = document.querySelector('.hero-bg');
-      if (sigil) sigil.style.transform = `translateY(${sy * 0.12}px)`;
-      if (bg) bg.style.transform = `translateY(${sy * 0.08}px)`;
-    };
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    return () => window.removeEventListener('scroll', handleScroll);
+    return () => observer.disconnect();
   }, []);
 
   return (
-    <div ref={heroRef}>
-      <div className="hero-bg"></div>
-      <div className="hero-border-h top"></div>
-      <div className="hero-border-h bot"></div>
-      <div className="hero-border-v left"></div>
-      <div className="hero-border-v right"></div>
-
-      <svg className="hero-sigil" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <circle cx="60" cy="60" r="55" stroke="#C9A84C" strokeWidth="0.8" opacity="0.4" />
-        <circle cx="60" cy="60" r="45" stroke="#C9A84C" strokeWidth="0.5" opacity="0.25" />
-        <line x1="60" y1="15" x2="60" y2="105" stroke="#C9A84C" strokeWidth="1.5" />
-        <line x1="38" y1="38" x2="82" y2="38" stroke="#C9A84C" strokeWidth="1.5" />
-        <circle cx="60" cy="104" r="5" fill="#C9A84C" opacity="0.8" />
-        <rect x="57" y="45" width="6" height="2" fill="#C9A84C" opacity="0.5" rx="1" />
-        <rect x="57" y="52" width="6" height="2" fill="#C9A84C" opacity="0.5" rx="1" />
-        <rect x="57" y="59" width="6" height="2" fill="#C9A84C" opacity="0.5" rx="1" />
-        <rect x="34" y="34" width="7" height="7" fill="#C9A84C" opacity="0.6" transform="rotate(45 37.5 37.5)" />
-        <rect x="79" y="34" width="7" height="7" fill="#C9A84C" opacity="0.6" transform="rotate(45 82.5 37.5)" />
-        <path d="M60 5 L63 12 L60 10 L57 12 Z" fill="#C9A84C" opacity="0.6" />
-        <path d="M60 115 L63 108 L60 110 L57 108 Z" fill="#C9A84C" opacity="0.6" />
-        <text x="60" y="28" fontFamily="serif" fontSize="6" fill="#C9A84C" opacity="0.5" textAnchor="middle">✦ ✦ ✦</text>
-        <g opacity="0.2">
-          <path d="M10 60 Q30 50 45 60 Q30 70 10 60Z" fill="#C9A84C" />
-          <path d="M110 60 Q90 50 75 60 Q90 70 110 60Z" fill="#C9A84C" />
-        </g>
-      </svg>
-
-      <div className="hero-eyebrow">— Portfolio of the Realm —</div>
-      <h1 className="hero-name">Kiruthikbairavan C</h1>
-
-      <div className="hero-divider">
-        <div className="hero-div-line"></div>
-        <div className="hero-div-gem"></div>
-        <div className="hero-div-line r"></div>
+    <div className="hero-container" ref={heroRef}>
+      <div className="hero-bg" />
+      
+      {/* Left Social Bar */}
+      <div className="side-socials">
+        <a href="https://github.com/kiruthik13" target="_blank" rel="noopener noreferrer"><i className="fab fa-github"></i></a>
+        <a href="https://linkedin.com/in/kiruthikbairavan" target="_blank" rel="noopener noreferrer"><i className="fab fa-linkedin"></i></a>
+        <a href="mailto:kiruthikbairavan@gmail.com"><i className="fas fa-envelope"></i></a>
+        <a href="tel:+91XXXXXXXXXX"><i className="fas fa-phone"></i></a>
       </div>
 
-      <div className="hero-typing-wrap">
-        <span id="typed-text">{typedText}</span><span className="typed-cursor"></span>
+      {/* Right Pagination Dots */}
+      <div className="side-pagination">
+        <span className="dot active"></span>
+        <span className="dot"></span>
+        <span className="dot"></span>
+        <span className="dot"></span>
+        <span className="dot"></span>
+        <span className="dot"></span>
       </div>
-      <p className="hero-house">House of Kongu &nbsp;·&nbsp; MSc Software Systems &nbsp;·&nbsp; First of His Name</p>
 
-      <div className="hero-cta">
-        <a href="#resume-section" className="hero-btn hero-btn-primary">⚔ View Resume</a>
-        <a href="#projects" className="hero-btn hero-btn-secondary">🐉 Enter the Realm</a>
+      <div className={`hero-content ${isVisible ? 'visible' : ''}`}>
+        <div className="hero-eyebrow">
+          HOUSE OF KONGU  ·  MSC SOFTWARE SYSTEMS  ·  FIRST OF HIS NAME
+        </div>
+        
+        <h1 className="hero-name">KIRUTHIKBAIRAVAN C</h1>
+        
+        <div className="hero-divider">
+          <span className="hero-div-line"></span>
+          <span className="hero-div-gem"></span>
+          <span className="hero-div-line r"></span>
+        </div>
+
+        <div className="hero-subtitle">
+          FULL STACK DEVELOPER  ·  FLUTTER DEVELOPER  ·  AI ENTHUSIAST
+        </div>
+
+        <div className="hero-actions">
+          <a href="#about" className="explore-btn">
+            EXPLORE MY REALM
+            <span className="btn-arrow">↓</span>
+          </a>
+        </div>
       </div>
-
-      <canvas id="energy-canvas" ref={fireCanvasRef}></canvas>
 
       <div className="scroll-hint">
         <span>SCROLL</span>
