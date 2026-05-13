@@ -190,13 +190,13 @@ function MobileMenu({ isOpen, onClose }) {
   }, [isOpen, onClose]);
 
   const NAV_LINKS = [
-    { href: '#about',         label: 'The Scroll' },
-    { href: '#skills',        label: 'Arsenal' },
-    { href: '#projects',      label: 'Conquests' },
-    { href: '#timeline',      label: 'Chronicle' },
-    { href: '#achievements',  label: 'Glory' },
-    { href: '#resume-section',label: 'The Parchment' },
-    { href: '#contact',       label: 'Ravens' },
+    { href: '#hero',          label: 'HOME' },
+    { href: '#about',         label: 'ABOUT' },
+    { href: '#skills',        label: 'SKILLS' },
+    { href: '#projects',      label: 'PROJECTS' },
+    { href: '#achievements',  label: 'ACHIEVEMENTS' },
+    { href: '#timeline',      label: 'TIMELINE' },
+    { href: '#contact',       label: 'CONTACT' },
   ];
 
   return (
