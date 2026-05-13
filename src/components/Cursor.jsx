@@ -57,7 +57,11 @@ const Cursor = () => {
     };
 
     document.addEventListener('mousemove', handleMouseMove);
-    document.addEventListener('mousemove', handleTrail);
+    // Only add cursor trail on non-touch (desktop) devices
+    const isTouch = 'ontouchstart' in window;
+    if (!isTouch) {
+      document.addEventListener('mousemove', handleTrail);
+    }
     animRing();
 
     const hoverables = document.querySelectorAll('a, button, .proj-card, .skill-card, .ach-item');

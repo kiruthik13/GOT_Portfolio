@@ -3,29 +3,47 @@ import React, { useEffect } from 'react';
 const About = () => {
   useEffect(() => {
     const revEls = document.querySelectorAll('.reveal');
+
+    // Fallback: if IntersectionObserver not supported (very old iOS), reveal all immediately
+    if (!('IntersectionObserver' in window)) {
+      revEls.forEach(el => el.classList.add('visible'));
+      return;
+    }
+
     const io = new IntersectionObserver((entries) => {
       entries.forEach((e) => {
         if (e.isIntersecting) {
           e.target.classList.add('visible');
-          // Count-up animation
+
+          // CGPA count-up: smooth easing with requestAnimationFrame
           e.target.querySelectorAll('[data-target]').forEach((el) => {
-            const target = +el.dataset.target;
-            const suffix = el.dataset.suffix || '';
+            const target  = +el.dataset.target;
+            const suffix  = el.dataset.suffix || '';
             const divisor = +(el.dataset.divisor || 1);
             const duration = 1800;
             const start = performance.now();
+
+            const easeOutCubic = (t) => 1 - Math.pow(1 - t, 3);
+
             function anim(now) {
-              const t = Math.min((now - start) / duration, 1);
-              const ease = t < 0.5 ? 4 * t * t * t : (t - 1) * (2 * t - 2) * (2 * t - 2) + 1;
-              const val = Math.round(target * ease);
-              el.textContent = (divisor > 1 ? (val / divisor).toFixed(1) : val) + suffix;
+              const t   = Math.min((now - start) / duration, 1);
+              const val = target * easeOutCubic(t);
+              // Always show 1 decimal place for CGPA (divisor > 1)
+              el.textContent = divisor > 1
+                ? (val / divisor).toFixed(1) + suffix
+                : Math.round(val) + suffix;
               if (t < 1) requestAnimationFrame(anim);
             }
             requestAnimationFrame(anim);
           });
         }
       });
-    }, { threshold: 0.12 });
+    }, {
+      threshold: 0.12,
+      // rootMargin fixes iOS Safari where threshold alone breaks at small viewports
+      rootMargin: '0px 0px -50px 0px'
+    });
+
     revEls.forEach((el) => io.observe(el));
     return () => revEls.forEach((el) => io.unobserve(el));
   }, []);
@@ -55,7 +73,8 @@ const About = () => {
             <div className="stat-label">Conquered Projects</div>
           </div>
           <div className="stat-box">
-            <div className="stat-num" data-target="74" data-suffix="" data-decimal="1" data-divisor="10">0</div>
+            {/* data-target="74" with data-divisor="10" → animates 0.0 → 7.4 smoothly */}
+            <div className="stat-num" data-target="74" data-suffix="" data-divisor="10">0.0</div>
             <div className="stat-label">Academic Standing (CGPA)</div>
           </div>
         </div>

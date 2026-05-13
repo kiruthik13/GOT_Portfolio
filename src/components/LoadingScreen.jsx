@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 
-const LoadingScreen = () => {
+const LoadingScreen = ({ onDone }) => {
   const [fadeOut, setFadeOut] = useState(false);
   const [displayNone, setDisplayNone] = useState(false);
   const [subText, setSubText] = useState('Forging the Realm...');
@@ -8,7 +8,6 @@ const LoadingScreen = () => {
   const loadingMessages = ['Forging the Realm...', 'Kindling the Dragon Fire...', 'Summoning the Herald...', 'The Realm Awakens...'];
 
   useEffect(() => {
-    // Prevent scrolling while loading
     document.body.style.overflow = 'hidden';
 
     let msgIdx = 0;
@@ -20,9 +19,12 @@ const LoadingScreen = () => {
     const handleLoad = () => {
       setTimeout(() => {
         setFadeOut(true);
-        // Re-enable scrolling when fade out starts
         document.body.style.overflow = 'auto';
-        setTimeout(() => setDisplayNone(true), 800);
+        setTimeout(() => {
+          setDisplayNone(true);
+          // Signal parent that loading is fully done (fade-out complete)
+          if (onDone) onDone();
+        }, 800);
       }, 2400);
     };
 
@@ -36,7 +38,7 @@ const LoadingScreen = () => {
       clearInterval(interval);
       window.removeEventListener('load', handleLoad);
     };
-  }, []);
+  }, [onDone]);
 
   if (displayNone) return null;
 

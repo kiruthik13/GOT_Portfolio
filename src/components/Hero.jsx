@@ -3,8 +3,9 @@ import React, { useEffect, useRef, useState } from 'react';
 const Hero = () => {
   const fireCanvasRef = useRef(null);
   const [typedText, setTypedText] = useState('');
+  const heroRef = useRef(null);
 
-  // Typing animation
+  // Typing animation — starts only when hero is visible, cleans up on unmount
   useEffect(() => {
     const roles = [
       'Software Engineer',
@@ -16,6 +17,7 @@ const Hero = () => {
     ];
     let rIdx = 0, cIdx = 0, deleting = false;
     let timeout;
+    let started = false;
 
     const type = () => {
       const role = roles[rIdx];
@@ -36,39 +38,61 @@ const Hero = () => {
       timeout = setTimeout(type, deleting ? 60 : 80);
     };
 
-    const startTimeout = setTimeout(type, 2800);
+    // Use IntersectionObserver to start typing only when hero is visible
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting && !started) {
+          started = true;
+          timeout = setTimeout(type, 400);
+          observer.disconnect();
+        }
+      },
+      { threshold: 0.1 }
+    );
+
+    if (heroRef.current) observer.observe(heroRef.current);
+
     return () => {
-      clearTimeout(startTimeout);
+      observer.disconnect();
       clearTimeout(timeout);
     };
   }, []);
 
-  // Sword Energy Waves Canvas
+  // Sword Energy Waves Canvas — with mobile/reduced-motion guards
   useEffect(() => {
+    const isMobile = window.innerWidth < 768;
+    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
     const canvas = fireCanvasRef.current;
     if (!canvas) return;
+
+    // On mobile or reduced motion — skip canvas animation entirely
+    if (isMobile || reducedMotion) {
+      canvas.style.display = 'none';
+      return;
+    }
+
     const ctx = canvas.getContext('2d');
-    
     let w, h;
     const resize = () => {
       w = canvas.width = window.innerWidth;
-      h = canvas.height = 300; // Increased height for more aura depth
+      h = canvas.height = 300;
     };
     resize();
     window.addEventListener('resize', resize);
 
     const waves = [
-      { amplitude: 40, frequency: 0.005, speed: 0.02, offset: 0, color: 'rgba(201, 168, 76, 0.15)' },
+      { amplitude: 40, frequency: 0.005, speed: 0.02,   offset: 0,          color: 'rgba(201, 168, 76, 0.15)' },
       { amplitude: 30, frequency: 0.008, speed: -0.015, offset: Math.PI / 2, color: 'rgba(201, 168, 76, 0.12)' },
-      { amplitude: 50, frequency: 0.003, speed: 0.01, offset: Math.PI, color: 'rgba(201, 168, 76, 0.08)' }
+      { amplitude: 50, frequency: 0.003, speed: 0.01,   offset: Math.PI,    color: 'rgba(201, 168, 76, 0.08)' }
     ];
 
     const particles = [];
     const sparkCount = 40;
     for (let i = 0; i < sparkCount; i++) {
       particles.push({
-        x: Math.random() * w,
-        y: h + Math.random() * 100,
+        x: Math.random() * (w || window.innerWidth),
+        y: (h || 300) + Math.random() * 100,
         vx: (Math.random() - 0.5) * 1.5,
         vy: -Math.random() * 2 - 0.5,
         size: Math.random() * 1.8 + 0.5,
@@ -79,6 +103,7 @@ const Hero = () => {
     }
 
     let time = 0;
+    let animId;
 
     const drawWaves = () => {
       ctx.globalCompositeOperation = 'lighter';
@@ -93,8 +118,6 @@ const Hero = () => {
         ctx.fillStyle = wave.color;
         ctx.fill();
       });
-
-      // Pulse lines
       ctx.lineWidth = 1;
       ctx.strokeStyle = 'rgba(201, 168, 76, 0.1)';
       for (let i = 0; i < 3; i++) {
@@ -123,19 +146,15 @@ const Hero = () => {
         p.x += p.vx;
         p.y += p.vy;
         p.life -= p.decay;
-
         if (p.life <= 0 || p.y < -20) {
           p.x = Math.random() * w;
           p.y = h + Math.random() * 50;
           p.life = Math.random() * 0.8 + 0.2;
         }
-
         ctx.beginPath();
         ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
         ctx.fillStyle = p.color.replace(')', `, ${p.life})`);
         ctx.fill();
-        
-        // Soft glow for particles
         ctx.shadowBlur = 4;
         ctx.shadowColor = p.color;
       });
@@ -145,15 +164,12 @@ const Hero = () => {
     const animate = () => {
       ctx.clearRect(0, 0, w, h);
       time += 0.5;
-      
       drawAura();
       drawWaves();
       drawParticles();
-      
-      requestAnimationFrame(animate);
+      animId = requestAnimationFrame(animate);
     };
-
-    const animId = requestAnimationFrame(animate);
+    animId = requestAnimationFrame(animate);
 
     return () => {
       window.removeEventListener('resize', resize);
@@ -175,7 +191,7 @@ const Hero = () => {
   }, []);
 
   return (
-    <>
+    <div ref={heroRef}>
       <div className="hero-bg"></div>
       <div className="hero-border-h top"></div>
       <div className="hero-border-h bot"></div>
@@ -227,7 +243,7 @@ const Hero = () => {
         <span>SCROLL</span>
         <div className="scroll-hint-line"></div>
       </div>
-    </>
+    </div>
   );
 };
 

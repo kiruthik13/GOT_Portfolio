@@ -4,8 +4,18 @@ const Particles = () => {
   const canvasRef = useRef(null);
 
   useEffect(() => {
+    // Mobile + reduced-motion guard — disable ember canvas to save battery
+    const isMobile = window.innerWidth < 768;
+    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
     const canvas = canvasRef.current;
     if (!canvas) return;
+
+    if (isMobile || reducedMotion) {
+      canvas.style.display = 'none';
+      return;
+    }
+
     const ctx = canvas.getContext('2d');
     let W, H;
 
@@ -17,9 +27,7 @@ const Particles = () => {
     window.addEventListener('resize', resize);
 
     class Ember {
-      constructor() {
-        this.init();
-      }
+      constructor() { this.init(); }
       init() {
         this.x = Math.random() * W;
         this.y = H + Math.random() * 50;
@@ -52,8 +60,10 @@ const Particles = () => {
       }
     }
 
+    // 90 embers on desktop, 20 on mobile (mobile already returns early above)
+    const EMBER_COUNT = 90;
     const embers = [];
-    for (let i = 0; i < 90; i++) {
+    for (let i = 0; i < EMBER_COUNT; i++) {
       const e = new Ember();
       e.y = Math.random() * H;
       embers.push(e);
@@ -62,10 +72,7 @@ const Particles = () => {
     let animationId;
     const loop = () => {
       ctx.clearRect(0, 0, W, H);
-      embers.forEach((e) => {
-        e.tick();
-        e.draw();
-      });
+      embers.forEach((e) => { e.tick(); e.draw(); });
       animationId = requestAnimationFrame(loop);
     };
     loop();
@@ -76,7 +83,13 @@ const Particles = () => {
     };
   }, []);
 
-  return <canvas id="ember-canvas" ref={canvasRef} style={{ position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', pointerEvents: 'none', zIndex: 1 }}></canvas>;
+  return (
+    <canvas
+      id="ember-canvas"
+      ref={canvasRef}
+      style={{ position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', pointerEvents: 'none', zIndex: 1 }}
+    />
+  );
 };
 
 export default Particles;

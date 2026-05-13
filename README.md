@@ -5,6 +5,7 @@ A premium, cinematic dark-fantasy developer portfolio inspired by **Game of Thro
 ![Kiruthikbairavan C Portfolio](https://img.shields.io/badge/Theme-Game%20of%20Thrones-C9A84C?style=for-the-badge)
 ![React](https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)
 ![Vite](https://img.shields.io/badge/Vite-646CFF?style=for-the-badge&logo=vite&logoColor=white)
+[![Live Demo](https://img.shields.io/badge/Live%20Demo-got--portfolio-000000?style=for-the-badge&logo=vercel&logoColor=white)](https://got-portfolio-qqp1.vercel.app)
 
 ## 🐉 The Cinematic Experience
 
@@ -25,6 +26,12 @@ This portfolio is not just a collection of links, but an immersive journey throu
 *   **Graphics**: Canvas API (Fire, Energy Waves, Particles)
 *   **Audio**: Web Audio API
 *   **Integration**: GitHub API v3
+
+## 🌐 Live Demo
+
+> **The realm is live!** Visit the deployed portfolio at:
+>
+> 🔗 **[https://got-portfolio-qqp1.vercel.app](https://got-portfolio-qqp1.vercel.app)**
 
 ## 🏰 Installation
 

@@ -18,10 +18,12 @@ import Chatbot from './components/Chatbot.jsx'
 
 function App() {
   const [menuOpen, setMenuOpen] = React.useState(false);
+  // loadingDone: true only after loading screen fade-out completes
+  // This prevents Particles & ember canvas from rendering during the loading sequence
+  const [loadingDone, setLoadingDone] = React.useState(false);
 
-  const toggleMenu = () => {
-    setMenuOpen(!menuOpen);
-  };
+  const toggleMenu = () => setMenuOpen(prev => !prev);
+  const closeMenu  = () => setMenuOpen(false);
 
   return (
     <>
@@ -31,8 +33,8 @@ function App() {
       {/* Page transition overlay */}
       <div className="page-transition" id="page-transition"></div>
 
-      {/* Loading Screen */}
-      <LoadingScreen />
+      {/* Loading Screen — signals parent when fade-out completes */}
+      <LoadingScreen onDone={() => setLoadingDone(true)} />
 
       {/* Audio Button */}
       <AudioButton />
@@ -40,11 +42,11 @@ function App() {
       {/* AI Chatbot */}
       <Chatbot />
 
-      {/* Ember Particles Canvas */}
-      <Particles />
+      {/* Ember Particles Canvas — only after loading screen is fully gone */}
+      {loadingDone && <Particles />}
 
-      {/* Mobile Menu */}
-      <MobileMenu isOpen={menuOpen} onClose={() => setMenuOpen(false)} />
+      {/* Mobile Menu with overlay backdrop */}
+      <MobileMenu isOpen={menuOpen} onClose={closeMenu} />
 
       {/* Navigation */}
       <Navbar menuOpen={menuOpen} onToggleMenu={toggleMenu} />
@@ -176,19 +178,57 @@ function AudioButton() {
   )
 }
 
-/* ── Mobile Menu (inline small component) ── */
+/* ── Mobile Menu — closes on link click, Escape key, and outside click ── */
 function MobileMenu({ isOpen, onClose }) {
+  // Close on Escape key
+  React.useEffect(() => {
+    const handleKey = (e) => {
+      if (e.key === 'Escape' && isOpen) onClose();
+    };
+    document.addEventListener('keydown', handleKey);
+    return () => document.removeEventListener('keydown', handleKey);
+  }, [isOpen, onClose]);
+
+  const NAV_LINKS = [
+    { href: '#about',         label: 'The Scroll' },
+    { href: '#skills',        label: 'Arsenal' },
+    { href: '#projects',      label: 'Conquests' },
+    { href: '#timeline',      label: 'Chronicle' },
+    { href: '#achievements',  label: 'Glory' },
+    { href: '#resume-section',label: 'The Parchment' },
+    { href: '#contact',       label: 'Ravens' },
+  ];
+
   return (
-    <div className={`mobile-menu ${isOpen ? 'open' : ''}`} id="mobile-menu">
-      <a href="#about" className="mobile-link" onClick={onClose}>The Scroll</a>
-      <a href="#skills" className="mobile-link" onClick={onClose}>Arsenal</a>
-      <a href="#projects" className="mobile-link" onClick={onClose}>Conquests</a>
-      <a href="#timeline" className="mobile-link" onClick={onClose}>Chronicle</a>
-      <a href="#achievements" className="mobile-link" onClick={onClose}>Glory</a>
-      <a href="#resume-section" className="mobile-link" onClick={onClose}>The Parchment</a>
-      <a href="#contact" className="mobile-link" onClick={onClose}>Ravens</a>
-    </div>
-  )
+    <>
+      {/* Overlay backdrop — clicking outside closes menu */}
+      {isOpen && (
+        <div
+          className="mobile-menu-overlay"
+          onClick={onClose}
+          aria-hidden="true"
+        />
+      )}
+      <div
+        className={`mobile-menu ${isOpen ? 'open' : ''}`}
+        id="mobile-menu"
+        role="dialog"
+        aria-modal="true"
+        aria-label="Navigation menu"
+      >
+        {NAV_LINKS.map(({ href, label }) => (
+          <a
+            key={href}
+            href={href}
+            className="mobile-link"
+            onClick={onClose}
+          >
+            {label}
+          </a>
+        ))}
+      </div>
+    </>
+  );
 }
 
 export default App

@@ -1861,3 +1861,159 @@ footer {
   width: 0;
   animation: loading-bar 2.4s cubic-bezier(0.65, 0, 0.35, 1) forwards;
 }
+
+/* ════════════════════════════════
+   MOBILE MENU OVERLAY BACKDROP
+════════════════════════════════ */
+.mobile-menu-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 198;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(2px);
+  cursor: pointer;
+}
+
+/* ════════════════════════════════
+   GITHUB ERROR FALLBACK CARD
+════════════════════════════════ */
+.gh-error-fallback {
+  margin: 2.5rem auto;
+  max-width: 480px;
+  padding: 2.5rem 2rem;
+  border: 1px solid rgba(139, 26, 26, 0.35);
+  background: linear-gradient(135deg, rgba(28, 12, 12, 0.9), rgba(18, 8, 8, 0.95));
+  text-align: center;
+  box-shadow: 0 0 40px rgba(139, 26, 26, 0.1);
+}
+
+.gh-error-icon {
+  font-size: 2rem;
+  color: var(--gold);
+  margin-bottom: 0.8rem;
+  filter: drop-shadow(0 0 8px rgba(201,168,76,0.4));
+}
+
+.gh-error-title {
+  font-family: 'Cinzel Decorative', serif;
+  font-size: 1rem;
+  color: var(--gold);
+  margin-bottom: 0.5rem;
+}
+
+.gh-error-sub {
+  font-size: 0.82rem;
+  color: var(--silver);
+  font-style: italic;
+  margin-bottom: 1.2rem;
+  line-height: 1.6;
+}
+
+.gh-error-link {
+  display: inline-block;
+  font-family: 'Cinzel', serif;
+  font-size: 0.65rem;
+  letter-spacing: 3px;
+  color: var(--gold);
+  text-decoration: none;
+  border: 1px solid rgba(201, 168, 76, 0.35);
+  padding: 0.6rem 1.4rem;
+  transition: all 0.3s;
+  text-transform: uppercase;
+}
+
+.gh-error-link:hover {
+  border-color: var(--gold);
+  background: rgba(201, 168, 76, 0.06);
+  box-shadow: 0 0 16px rgba(201,168,76,0.2);
+}
+
+/* ════════════════════════════════
+   CONTACT — TOAST & FORM ERRORS
+════════════════════════════════ */
+.contact-toast {
+  position: fixed;
+  bottom: 5rem;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 9000;
+  background: linear-gradient(135deg, rgba(18, 14, 6, 0.98), rgba(26, 20, 8, 0.98));
+  border: 1px solid rgba(201, 168, 76, 0.5);
+  color: var(--gold);
+  font-family: 'Cinzel', serif;
+  font-size: 0.7rem;
+  letter-spacing: 3px;
+  padding: 1rem 2rem;
+  text-align: center;
+  box-shadow: 0 0 30px rgba(201,168,76,0.25), 0 4px 20px rgba(0,0,0,0.6);
+  animation: toast-in 0.4s ease forwards;
+  white-space: nowrap;
+}
+
+@keyframes toast-in {
+  from { opacity: 0; transform: translateX(-50%) translateY(12px); }
+  to   { opacity: 1; transform: translateX(-50%) translateY(0); }
+}
+
+.form-error {
+  font-family: 'Cinzel', serif;
+  font-size: 0.6rem;
+  letter-spacing: 2px;
+  color: var(--crimson-light);
+  margin-top: 0.4rem;
+  display: block;
+}
+
+/* ════════════════════════════════
+   ACHIEVEMENTS — SUBSECTIONS
+════════════════════════════════ */
+.ach-subsection {
+  margin-bottom: 0.5rem;
+}
+
+.ach-subsection-title {
+  font-family: 'Cinzel Decorative', serif;
+  font-size: 1rem;
+  color: var(--gold);
+  letter-spacing: 3px;
+  margin-bottom: 1.8rem;
+  text-align: center;
+  opacity: 0.9;
+}
+
+/* Battle Honours — gold glow border */
+.ach-item.battle-honour {
+  border-color: rgba(201, 168, 76, 0.45) !important;
+  box-shadow: 0 0 24px rgba(201, 168, 76, 0.12), inset 0 0 40px rgba(201, 168, 76, 0.02);
+}
+
+.ach-item.battle-honour:hover {
+  border-color: rgba(201, 168, 76, 0.75) !important;
+  box-shadow: 0 0 36px rgba(201, 168, 76, 0.25), 0 8px 32px rgba(0,0,0,0.5);
+}
+
+/* Certifications — silver/subtle border */
+.ach-item.certification {
+  border-color: rgba(184, 176, 160, 0.18) !important;
+  box-shadow: 0 0 12px rgba(0,0,0,0.3);
+}
+
+.ach-item.certification:hover {
+  border-color: rgba(184, 176, 160, 0.4) !important;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+}
+
+/* ════════════════════════════════
+   RESUME — PUBLICATION STATUS
+════════════════════════════════ */
+.pub-status {
+  display: block;
+  font-family: 'Cinzel', serif;
+  font-size: 0.58rem;
+  letter-spacing: 2px;
+  color: var(--gold-dark);
+  margin-top: 0.25rem;
+  text-transform: uppercase;
+  font-style: normal;
+}
+
