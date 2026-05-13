@@ -1795,7 +1795,7 @@ footer {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  transition: opacity 1s, visibility 1s;
+  transition: opacity 0.8s, visibility 0.8s;
 }
 
 #loading-screen.fade-out {
@@ -1803,115 +1803,60 @@ footer {
   visibility: hidden;
 }
 
-.dragon-loading-container {
-  position: relative;
-  width: 300px;
-  height: 300px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.dragon-head-wrap {
-  width: 150px;
-  height: 150px;
-  z-index: 2;
-  animation: dragon-float 3s ease-in-out infinite alternate;
-}
-
-.dragon-svg {
-  width: 100%;
-  height: 100%;
-  filter: drop-shadow(0 0 20px rgba(201, 168, 76, 0.4));
-}
-
-.dragon-path {
-  fill: url(#dragon-grad);
-  stroke: var(--gold-dark);
-  stroke-width: 0.5px;
-}
-
-.dragon-fire {
-  opacity: 0.8;
-  animation: fire-flicker 0.2s infinite alternate;
-  transform-origin: 50px 60px;
-}
-
-@keyframes fire-flicker {
-  0% { transform: scale(1) translateY(0); opacity: 0.8; }
-  100% { transform: scale(1.1) translateY(-2px); opacity: 1; }
-}
-
-@keyframes dragon-float {
-  0% { transform: translateY(0) rotate(-2deg); }
-  100% { transform: translateY(-10px) rotate(2deg); }
+.loading-sword-svg {
+  width: 120px;
+  height: 120px;
+  animation: sword-forge 2s ease-in-out infinite alternate;
+  filter: drop-shadow(0 0 15px rgba(201, 168, 76, 0.3));
 }
 
 .loading-runes {
   position: absolute;
-  width: 100%;
-  height: 100%;
+  width: 240px;
+  height: 240px;
   pointer-events: none;
 }
 
 .loading-rune {
   position: absolute;
   color: var(--gold);
-  font-size: 1.5rem;
-  opacity: 0.15;
-  filter: blur(1px);
-  animation: rune-pulse 3s infinite alternate;
-}
-
-@keyframes rune-pulse {
-  0% { opacity: 0.05; transform: scale(0.9); filter: blur(2px); }
-  100% { opacity: 0.25; transform: scale(1.1); filter: blur(0px); }
-}
-
-.loading-content {
-  text-align: center;
-  margin-top: 1rem;
-  z-index: 2;
+  font-size: 1.2rem;
+  opacity: 0.1;
+  animation: rune-float 3s infinite;
 }
 
 .loading-title {
   font-family: 'Cinzel Decorative', serif;
-  font-size: 1.8rem;
+  font-size: 1.5rem;
   color: var(--gold);
-  letter-spacing: 5px;
-  text-shadow: 0 0 20px rgba(201, 168, 76, 0.6);
-  margin-bottom: 0.5rem;
+  margin-top: 2rem;
+  letter-spacing: 4px;
+  text-shadow: 0 0 15px var(--gold-glow);
 }
 
 .loading-sub {
   font-family: 'Cinzel', serif;
-  font-size: 0.7rem;
+  font-size: 0.65rem;
   color: var(--silver);
-  letter-spacing: 4px;
+  margin-top: 0.8rem;
+  letter-spacing: 5px;
   text-transform: uppercase;
-  height: 1.2rem;
+  animation: loading-dots 1.5s infinite;
 }
 
 .loading-bar-track {
-  width: 250px;
-  height: 2px;
+  width: 200px;
+  height: 1px;
   background: rgba(201, 168, 76, 0.1);
-  margin: 1.5rem auto 0;
+  margin-top: 2rem;
   overflow: hidden;
-  border-radius: 1px;
 }
 
 .loading-bar-fill {
   height: 100%;
-  background: linear-gradient(to right, var(--gold-dark), var(--gold), var(--gold-light));
+  background: var(--gold);
   width: 0;
-  box-shadow: 0 0 10px var(--gold);
-  animation: loading-bar 3s cubic-bezier(0.65, 0, 0.35, 1) forwards;
-}
-
-@keyframes loading-bar {
-  0% { width: 0; }
-  100% { width: 100%; }
+  animation: loading-bar 2.4s cubic-bezier(0.65, 0, 0.35, 1) forwards;
 }
 
 /* ════════════════════════════════
