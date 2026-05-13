@@ -29,7 +29,7 @@ html {
 
 body {
   /* Dragon sigil centered — black bg fills edges naturally */
-  background: #060402 url('/hero-bg.jpg') center center / contain no-repeat fixed;
+  background: #060402 url('/hero-bg.jpg') center center / cover no-repeat fixed;
   color: var(--silver-light);
   font-family: 'IM Fell English', Georgia, serif;
   overflow-x: hidden;
