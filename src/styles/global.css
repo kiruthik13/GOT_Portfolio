@@ -1709,13 +1709,12 @@ footer {
 #loading-screen {
   position: fixed;
   inset: 0;
-  background: #060402;
+  background: #000;
   z-index: 10000;
   display: flex;
-  flex-direction: column;
   align-items: center;
   justify-content: center;
-  transition: opacity 0.8s, visibility 0.8s;
+  transition: opacity 1s, visibility 1s;
 }
 
 #loading-screen.fade-out {
@@ -1723,60 +1722,141 @@ footer {
   visibility: hidden;
 }
 
-.loading-sword-svg {
-  width: 120px;
-  height: 120px;
-  animation: sword-forge 2s ease-in-out infinite alternate;
-  filter: drop-shadow(0 0 15px rgba(201, 168, 76, 0.3));
+.loading-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2rem;
+  width: 100%;
+  max-width: 800px;
+  position: relative;
 }
 
-.loading-runes {
+.loading-dragon-art {
+  position: relative;
+  width: clamp(300px, 60vw, 600px);
+  filter: drop-shadow(0 0 30px rgba(201, 168, 76, 0.2));
+  animation: dragon-float 4s ease-in-out infinite;
+}
+
+.loading-dragon-art img {
+  width: 100%;
+  display: block;
+}
+
+/* Fire Beam from Dragon's Mouth */
+.fire-beam {
   position: absolute;
-  width: 240px;
-  height: 240px;
-  pointer-events: none;
+  top: 60%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 4px;
+  height: 0;
+  background: linear-gradient(to bottom, #F0D080, #C9A84C, transparent);
+  box-shadow: 0 0 20px #C9A84C, 0 0 40px rgba(201, 168, 76, 0.5);
+  animation: fire-blast 2s ease-in-out infinite alternate;
 }
 
-.loading-rune {
-  position: absolute;
-  color: var(--gold);
-  font-size: 1.2rem;
-  opacity: 0.1;
-  animation: rune-float 3s infinite;
+.loading-info {
+  text-align: center;
+  z-index: 10;
 }
 
-.loading-title {
+.loading-name {
   font-family: 'Cinzel Decorative', serif;
   font-size: 1.5rem;
   color: var(--gold);
-  margin-top: 2rem;
-  letter-spacing: 4px;
+  letter-spacing: 6px;
+  margin-bottom: 0.5rem;
   text-shadow: 0 0 15px var(--gold-glow);
 }
 
-.loading-sub {
+.loading-status {
   font-family: 'Cinzel', serif;
   font-size: 0.65rem;
   color: var(--silver);
-  margin-top: 0.8rem;
-  letter-spacing: 5px;
+  letter-spacing: 4px;
   text-transform: uppercase;
-  animation: loading-dots 1.5s infinite;
+  margin-bottom: 2.5rem;
+  opacity: 0.8;
+}
+
+.loading-bar-wrap {
+  width: 280px;
+  position: relative;
 }
 
 .loading-bar-track {
-  width: 200px;
-  height: 1px;
-  background: rgba(201, 168, 76, 0.1);
-  margin-top: 2rem;
+  width: 100%;
+  height: 2px;
+  background: rgba(201, 168, 76, 0.15);
   overflow: hidden;
+  position: relative;
 }
 
 .loading-bar-fill {
   height: 100%;
   background: var(--gold);
-  width: 0;
-  animation: loading-bar 2.4s cubic-bezier(0.65, 0, 0.35, 1) forwards;
+  box-shadow: 0 0 10px var(--gold);
+  transition: width 0.3s ease;
+}
+
+.bar-glow {
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 40px;
+  height: 10px;
+  background: radial-gradient(circle, #F0D080 0%, transparent 70%);
+}
+
+.loading-percentage {
+  font-family: 'Cinzel', serif;
+  font-size: 0.75rem;
+  color: var(--gold);
+  margin-top: 1rem;
+  letter-spacing: 2px;
+}
+
+/* Runes Circle */
+.loading-runes-circle {
+  position: absolute;
+  width: 400px;
+  height: 400px;
+  border-radius: 50%;
+  border: 1px solid rgba(201, 168, 76, 0.05);
+  animation: rotate-runes 20s linear infinite;
+  z-index: 1;
+}
+
+.rune {
+  position: absolute;
+  color: var(--gold);
+  font-size: 1rem;
+  opacity: 0.2;
+}
+
+.rune:nth-child(1) { top: 0; left: 50%; transform: translateX(-50%); }
+.rune:nth-child(2) { top: 25%; right: 5%; }
+.rune:nth-child(3) { bottom: 25%; right: 5%; }
+.rune:nth-child(4) { bottom: 0; left: 50%; transform: translateX(-50%); }
+.rune:nth-child(5) { bottom: 25%; left: 5%; }
+.rune:nth-child(6) { top: 25%; left: 5%; }
+
+@keyframes dragon-float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-15px); }
+}
+
+@keyframes fire-blast {
+  0% { height: 40px; opacity: 0.6; }
+  100% { height: 120px; opacity: 1; }
+}
+
+@keyframes rotate-runes {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
 }
 
 /* ════════════════════════════════
