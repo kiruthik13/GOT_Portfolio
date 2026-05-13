@@ -200,7 +200,7 @@ nav.scrolled {
   align-items: center;
   justify-content: center;
   overflow: hidden;
-  background: #000; /* fallback */
+  background: transparent;
 }
 
 .hero-container {
@@ -216,10 +216,11 @@ nav.scrolled {
 .hero-bg {
   position: absolute;
   inset: 0;
-  /* Dark central vignette to make text pop while keeping castle visible */
+  /* Image as base, with vignette layers on top for readability */
   background: 
-    linear-gradient(to bottom, rgba(0,0,0,0.6) 0%, transparent 40%, transparent 60%, rgba(0,0,0,0.8) 100%),
-    radial-gradient(circle at center, rgba(0,0,0,0.2) 0%, rgba(0,0,0,0.6) 100%);
+    linear-gradient(to bottom, rgba(0,0,0,0.5) 0%, transparent 40%, transparent 60%, rgba(0,0,0,0.8) 100%),
+    radial-gradient(circle at center, rgba(0,0,0,0.1) 0%, rgba(0,0,0,0.5) 100%),
+    url('/hero-bg.jpg') center center / cover no-repeat fixed;
   z-index: -1;
 }
 
